@@ -1,89 +1,67 @@
-// Selecionando elementos do DOM
-const taskInput = document.getElementById("task-input");
-const taskList = document.getElementById("task-list");
-const addTaskBtn = document.getElementById("add-task-btn");
-const toggleThemeBtn = document.getElementById("toggle-theme-btn");
+const taskInput = document.getElementById('taskInput');
+const addTaskBtn = document.getElementById('addTaskBtn');
+const taskList = document.getElementById('taskList');
+const toggleThemeBtn = document.getElementById('toggleTheme');
 
-// Carregar tarefas do localStorage
-function loadTasks() {
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    tasks.forEach(task => addTaskToDOM(task.text, task.completed));
-}
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
-// Salvar tarefas no localStorage
-function saveTasks() {
-    const tasks = [];
-    document.querySelectorAll(".task").forEach(task => {
-        tasks.push({ text: task.querySelector("span").textContent, completed: task.classList.contains("completed") });
-    });
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-}
+function renderTasks() {
+  taskList.innerHTML = '';
+  tasks.forEach((task, index) => {
+    const li = document.createElement('li');
+    li.classList.toggle('completed', task.completed);
 
-// Adicionar tarefa ao DOM
-function addTaskToDOM(text, completed = false) {
-    const li = document.createElement("li");
-    li.classList.add("task");
-    if (completed) li.classList.add("completed");
+    li.innerHTML = `
+      <span class="task-text">${task.text}</span>
+      <div class="buttons">
+        <button class="editBtn">✏️</button>
+        <button class="completeBtn">${task.completed ? '✔️' : '✅'}</button>
+        <button class="deleteBtn">❌</button>
+      </div>
+    `;
 
-    const span = document.createElement("span");
-    span.textContent = text;
-    span.addEventListener("click", () => {
-        li.classList.toggle("completed");
-        saveTasks();
-    });
+    li.querySelector('.editBtn').addEventListener('click', () => editTask(index));
+    li.querySelector('.completeBtn').addEventListener('click', () => markAsCompleted(index));
+    li.querySelector('.deleteBtn').addEventListener('click', () => deleteTask(index));
 
-    const editBtn = document.createElement("button");
-    editBtn.textContent = "✏️";
-    editBtn.addEventListener("click", () => editTask(span));
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "❌";
-    deleteBtn.addEventListener("click", () => {
-        li.remove();
-        saveTasks();
-    });
-
-    li.append(span, editBtn, deleteBtn);
     taskList.appendChild(li);
-    saveTasks();
+  });
+
+  localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
-// Editar tarefa
-function editTask(span) {
-    const newText = prompt("Editar tarefa:", span.textContent);
-    if (newText !== null) {
-        span.textContent = newText;
-        saveTasks();
-    }
+function addTask() {
+  const taskText = taskInput.value.trim();
+  if (taskText) {
+    tasks.push({ text: taskText, completed: false });
+    taskInput.value = '';
+    renderTasks();
+  }
 }
 
-// Adicionar nova tarefa
-addTaskBtn.addEventListener("click", () => {
-    if (taskInput.value.trim() !== "") {
-        addTaskToDOM(taskInput.value.trim());
-        taskInput.value = "";
-    }
-});
+function markAsCompleted(index) {
+  tasks[index].completed = !tasks[index].completed;
+  renderTasks();
+}
 
-taskInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter" && taskInput.value.trim() !== "") {
-        addTaskToDOM(taskInput.value.trim());
-        taskInput.value = "";
-    }
-});
+function deleteTask(index) {
+  tasks.splice(index, 1);
+  renderTasks();
+}
 
-// Alternar tema claro/escuro
+function editTask(index) {
+  const newText = prompt('Edite a tarefa:', tasks[index].text);
+  if (newText) {
+    tasks[index].text = newText;
+    renderTasks();
+  }
+}
+
 function toggleTheme() {
-    document.body.classList.toggle("dark-mode");
-    localStorage.setItem("theme", document.body.classList.contains("dark-mode") ? "dark" : "light");
+  document.body.classList.toggle('dark-mode');
 }
 
-toggleThemeBtn.addEventListener("click", toggleTheme);
+addTaskBtn.addEventListener('click', addTask);
+toggleThemeBtn.addEventListener('click', toggleTheme);
 
-// Aplicar tema salvo
-if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark-mode");
-}
-
-// Inicializar tarefas
-loadTasks();
+renderTasks();
