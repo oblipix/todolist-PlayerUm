@@ -1,0 +1,96 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    transition: background 0.3s, color 0.3s;
+}
+
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.808);
+    text-align: center;
+    width: 300px;
+}
+
+input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition:cubic-bezier(1, 0, 0, 1);    
+
+}
+
+input:focus {
+    outline: none;
+    border-color: #7f98b3
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #6bac9e;
+    color: white;
+    font-size: 16px;
+    margin: 5px;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #7f98b3;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    color: #333;
+}
+
+
+h1{
+    color: #7f98b3;
+}
+
+
+.task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #eee;
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.task.completed span {
+    text-decoration: line-through;
+    color: gray;
+}
+
+.dark-mode {
+    background-color: #333;
+    color: white;
+}
+
+.dark-mode .container {
+    background: #444;
+}
+
+.dark-mode button {
+    background: #555;
+}
+
+.dark-mode button:hover {
+    background: #777;
+}
